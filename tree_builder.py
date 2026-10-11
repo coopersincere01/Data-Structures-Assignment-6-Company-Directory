@@ -7,8 +7,11 @@ class EmployeeNode:
         right (EmployeeNode): The right child node, representing the right subordinate.
     '''
 
-    # Delete this line and implement the class below
-    pass
+    def __init__(self, name):
+        self.name = name
+        self.left = None
+        self.right = None
+
 
 class TeamTree:
     '''
@@ -16,22 +19,73 @@ class TeamTree:
     Attributes:
         root (EmployeeNode): The root node of the tree, representing the team lead.
     Methods:
-        insert(manager_name, employee_name, side, current_node=None): Inserts a new employee under the specified manager.
-        print_tree(node=None, level=0): Prints the tree structure starting from the given node.
-
+        insert(manager_name, employee_name, side, current_node=None):
+            Inserts a new employee under the specified manager.
+        print_tree(node=None, level=0):
+            Prints the tree structure starting from the given node.
     '''
-    
-    # Delete this line and implement the class below
-    pass
 
-# Test your code here
+    def __init__(self):
+        self.root = None
 
+    def insert(self, manager_name, employee_name, side, current_node=None):
+        if self.root is None:
+            print("Cannot add employee. No team lead exists.")
+            return False
 
+        if current_node is None:
+            current_node = self.root
 
+        if current_node.name == manager_name:
+            if side == "left":
+                if current_node.left is None:
+                    current_node.left = EmployeeNode(employee_name)
+                    print(f"✅ {employee_name} added to the LEFT of {manager_name}")
+                else:
+                    print(f"{manager_name} already has a left report.")
+                return True
 
+            elif side == "right":
+                if current_node.right is None:
+                    current_node.right = EmployeeNode(employee_name)
+                    print(f"✅ {employee_name} added to the RIGHT of {manager_name}")
+                else:
+                    print(f"{manager_name} already has a right report.")
+                return True
 
+            else:
+                print("Invalid side. Please enter left or right.")
+                return True
 
+        if current_node.left is not None:
+            if self.insert(manager_name, employee_name, side, current_node.left):
+                return True
 
+        if current_node.right is not None:
+            if self.insert(manager_name, employee_name, side, current_node.right):
+                return True
+
+        if current_node == self.root:
+            print(f"Manager '{manager_name}' was not found.")
+
+        return False
+
+    def print_tree(self, node=None, level=0):
+        if node is None:
+            if level == 0:
+                node = self.root
+            else:
+                return
+
+        if node is None:
+            print("The team directory is empty.")
+            return
+
+        indent = "    " * level
+        print(f"{indent}- {node.name}")
+
+        self.print_tree(node.left, level + 1)
+        self.print_tree(node.right, level + 1)
 
 
 # CLI functionality
@@ -62,11 +116,16 @@ def company_directory():
             tree.insert(manager, employee, side)
 
         elif choice == "3":
-            print("\n🌳  Current Team Structure:")
+            print("\n🌳 Current Team Structure:")
             tree.print_tree()
 
         elif choice == "4":
             print("Good Bye!")
             break
+
         else:
             print("❌ Invalid option. Try again.")
+
+
+if __name__ == "__main__":
+    company_directory()
